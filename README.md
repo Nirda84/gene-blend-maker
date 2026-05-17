@@ -39,6 +39,21 @@ The entire flow works beautifully on phones — the same upload + generate exper
   <img src="docs/media/05-create-mobile.png" alt="Mobile create" width="280" />
 </p>
 
+### 5. The result — meet your future child
+After ~10–15 seconds, the generated portrait appears with a soft gradient glow. Download, share, copy a link, or regenerate with different options.
+
+<img src="docs/media/06-result-boy.png" alt="Result — single child (boy)" width="420" />
+
+### 6. Girl mode
+Same flow, just pick "Girl" before generating.
+
+<img src="docs/media/07-result-girl.png" alt="Result — single child (girl)" width="420" />
+
+### 7. Family mode — multiple children at once
+Generate a full family portrait with up to 4 children. Each child gets its own gender + name chip, and you can mark twins.
+
+<img src="docs/media/08-result-family.png" alt="Result — family portrait with two children" width="420" />
+
 ---
 
 ## ✨ Features
