@@ -1,6 +1,15 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Sparkles, Wand2, Download, Share2, Heart, RefreshCw } from "lucide-react";
+import {
+  Sparkles,
+  Wand2,
+  Download,
+  Share2,
+  Heart,
+  RefreshCw,
+  Baby,
+  Users,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -16,8 +25,9 @@ import { LoadingOverlay } from "@/components/genblend/LoadingOverlay";
 import {
   generateChild,
   type ChildAge,
-  type ChildGender,
+  type GenMode,
 } from "@/lib/generateChild";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -27,36 +37,47 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Upload two photos and let AI imagine what your future child could look like. Playful, magical, and instant.",
+          "Upload two photos and let AI imagine what your future child — or whole family — could look like.",
       },
       { property: "og:title", content: "GenBlend — See Your Future Family" },
       {
         property: "og:description",
-        content: "AI-powered baby face prediction from two parent photos.",
+        content: "AI-powered baby & family face prediction from two parent photos.",
       },
     ],
   }),
 });
 
+const MODE_OPTIONS: { value: GenMode; label: string; emoji: string; icon: typeof Baby }[] = [
+  { value: "boy", label: "Boy", emoji: "💙", icon: Baby },
+  { value: "girl", label: "Girl", emoji: "💖", icon: Baby },
+  { value: "family", label: "Family", emoji: "👨‍👩‍👧", icon: Users },
+];
+
 function Index() {
   const [parent1, setParent1] = useState<string | null>(null);
   const [parent2, setParent2] = useState<string | null>(null);
   const [age, setAge] = useState<ChildAge>("child");
-  const [gender, setGender] = useState<ChildGender>("surprise");
+  const [mode, setMode] = useState<GenMode | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
-  const canGenerate = !!parent1 && !!parent2 && !loading;
+  const canGenerate = !!parent1 && !!parent2 && !!mode && !loading;
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (overrideMode?: GenMode) => {
+    const useMode = overrideMode ?? mode;
     if (!parent1 || !parent2) {
       toast.error("Please upload both parent photos first.");
+      return;
+    }
+    if (!useMode) {
+      toast.error("Pick what you'd like to create — Boy, Girl, or Family.");
       return;
     }
     setLoading(true);
     setResult(null);
     try {
-      const { imageUrl } = await generateChild({ parent1, parent2, age, gender });
+      const { imageUrl } = await generateChild({ parent1, parent2, age, mode: useMode });
       setResult(imageUrl);
       setTimeout(() => {
         document
@@ -70,11 +91,22 @@ function Index() {
     }
   };
 
+  const handleRegenerate = () => {
+    // Clear current result and reset mode so the user is asked again
+    setResult(null);
+    setMode(null);
+    setTimeout(() => {
+      document
+        .getElementById("options")
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+  };
+
   const handleDownload = () => {
     if (!result) return;
     const a = document.createElement("a");
     a.href = result;
-    a.download = "genblend-child.jpg";
+    a.download = "genblend.jpg";
     a.click();
   };
 
@@ -83,7 +115,7 @@ function Index() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Meet our future child!",
+          title: "Meet our future family!",
           text: "Made with GenBlend ✨",
           url: window.location.href,
         });
@@ -139,7 +171,7 @@ function Index() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
             </span>
-            New: realistic blending model v2
+            New: family portrait mode
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
             See Your{" "}
@@ -148,8 +180,8 @@ function Index() {
             </span>
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
-            Upload two photos. We'll blend the features and imagine what your future little one
-            might look like — in seconds.
+            Upload two photos. We'll blend the features and imagine your future little one — or the
+            whole family — in seconds.
           </p>
         </section>
 
@@ -172,38 +204,56 @@ function Index() {
         </section>
 
         {/* Options */}
-        <section className="mt-10 rounded-3xl border border-border bg-card/70 p-6 shadow-soft backdrop-blur sm:p-8">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-foreground">
-                Child's Age
-              </label>
-              <Select value={age} onValueChange={(v) => setAge(v as ChildAge)}>
-                <SelectTrigger className="h-12 rounded-xl">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="toddler">👶 Toddler (2–3)</SelectItem>
-                  <SelectItem value="child">🧒 Child (5–7)</SelectItem>
-                  <SelectItem value="teen">🧑 Teenager (14–16)</SelectItem>
-                </SelectContent>
-              </Select>
+        <section
+          id="options"
+          className="mt-10 rounded-3xl border border-border bg-card/70 p-6 shadow-soft backdrop-blur sm:p-8"
+        >
+          <div>
+            <label className="mb-3 block text-sm font-semibold text-foreground">
+              What would you like to create?
+            </label>
+            <div className="grid grid-cols-3 gap-3">
+              {MODE_OPTIONS.map((opt) => {
+                const Icon = opt.icon;
+                const active = mode === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setMode(opt.value)}
+                    className={cn(
+                      "group relative flex flex-col items-center justify-center gap-2 rounded-2xl border-2 p-4 text-center transition-all",
+                      active
+                        ? "border-primary bg-primary/10 shadow-soft"
+                        : "border-border bg-background/60 hover:border-primary/50 hover:bg-primary/5",
+                    )}
+                    aria-pressed={active}
+                  >
+                    <div className="text-2xl">{opt.emoji}</div>
+                    <div className="flex items-center gap-1.5 text-sm font-semibold">
+                      <Icon className="h-4 w-4" />
+                      {opt.label}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
-            <div>
-              <label className="mb-2 block text-sm font-semibold text-foreground">
-                Gender Prediction
-              </label>
-              <Select value={gender} onValueChange={(v) => setGender(v as ChildGender)}>
-                <SelectTrigger className="h-12 rounded-xl">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="surprise">✨ Surprise Me</SelectItem>
-                  <SelectItem value="boy">💙 Boy</SelectItem>
-                  <SelectItem value="girl">💖 Girl</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          </div>
+
+          <div className="mt-6">
+            <label className="mb-2 block text-sm font-semibold text-foreground">
+              {mode === "family" ? "Child's age in the family portrait" : "Child's age"}
+            </label>
+            <Select value={age} onValueChange={(v) => setAge(v as ChildAge)}>
+              <SelectTrigger className="h-12 rounded-xl">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="toddler">👶 Toddler (2–3)</SelectItem>
+                <SelectItem value="child">🧒 Child (5–7)</SelectItem>
+                <SelectItem value="teen">🧑 Teenager (14–16)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* CTA */}
@@ -217,24 +267,26 @@ function Index() {
                 />
               )}
               <Button
-                onClick={handleGenerate}
+                onClick={() => handleGenerate()}
                 disabled={!canGenerate}
                 size="lg"
                 className="relative h-14 w-full rounded-2xl px-10 text-base font-semibold shadow-soft transition-transform hover:scale-[1.02] sm:w-auto"
                 style={{ background: "var(--gradient-primary)" }}
               >
                 <Wand2 className="mr-2 h-5 w-5" />
-                Blend Features & Generate
+                {mode === "family" ? "Generate Family Portrait" : "Blend & Generate"}
               </Button>
             </div>
             {!parent1 || !parent2 ? (
               <p className="mt-3 text-xs text-muted-foreground">
                 Upload both photos to enable generation
               </p>
-            ) : (
+            ) : !mode ? (
               <p className="mt-3 text-xs text-muted-foreground">
-                Takes about 4 seconds ✨
+                Pick Boy, Girl, or Family above
               </p>
+            ) : (
+              <p className="mt-3 text-xs text-muted-foreground">Takes a few seconds ✨</p>
             )}
           </div>
         </section>
@@ -249,7 +301,7 @@ function Index() {
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
                 Meet your{" "}
                 <span className="bg-gradient-to-r from-primary to-[oklch(0.65_0.22_330)] bg-clip-text text-transparent">
-                  future little one
+                  {mode === "family" ? "future family" : "future little one"}
                 </span>
               </h2>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -267,7 +319,7 @@ function Index() {
                 <div className="relative overflow-hidden rounded-3xl border-4 border-card bg-card shadow-glow">
                   <img
                     src={result}
-                    alt="AI-generated child portrait"
+                    alt="AI-generated portrait"
                     className="aspect-square w-full object-cover"
                   />
                 </div>
@@ -292,11 +344,11 @@ function Index() {
                 </Button>
               </div>
               <Button
-                onClick={handleGenerate}
+                onClick={handleRegenerate}
                 variant="ghost"
                 className="mt-3 w-full rounded-xl text-muted-foreground hover:text-foreground"
               >
-                <RefreshCw className="mr-2 h-4 w-4" /> Generate another
+                <RefreshCw className="mr-2 h-4 w-4" /> Create another (choose again)
               </Button>
             </div>
           </section>
