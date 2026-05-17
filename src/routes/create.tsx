@@ -723,8 +723,14 @@ function CreatePage() {
                 >
                   <button
                     type="button"
-                    onClick={() => handleSelectFromHistory(h)}
-                    className="block w-full text-left"
+                    onClick={() =>
+                      setLightbox({
+                        url: h.imageUrl,
+                        alt: h.names.join(", "),
+                        name: `genblend-${h.names.join("-").toLowerCase()}.jpg`,
+                      })
+                    }
+                    className="block w-full cursor-zoom-in text-left"
                   >
                     <img
                       src={h.imageUrl}
