@@ -621,13 +621,27 @@ function CreatePage() {
                   style={{ background: "var(--gradient-primary)" }}
                   aria-hidden
                 />
-                <div className="relative overflow-hidden rounded-3xl border-4 border-card bg-card shadow-glow">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setLightbox({
+                      url: result.imageUrl,
+                      alt: `AI-generated portrait of ${result.names.join(", ")}`,
+                      name: `genblend-${result.names.join("-").toLowerCase()}.jpg`,
+                    })
+                  }
+                  className="group relative block w-full overflow-hidden rounded-3xl border-4 border-card bg-card shadow-glow cursor-zoom-in"
+                  aria-label="View image full screen"
+                >
                   <img
                     src={result.imageUrl}
                     alt={`AI-generated portrait of ${result.names.join(", ")}`}
-                    className="aspect-square w-full object-cover"
+                    className="aspect-square w-full object-cover transition group-hover:scale-[1.02]"
                   />
-                </div>
+                  <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-background/80 px-2.5 py-1.5 text-xs font-semibold text-foreground opacity-0 backdrop-blur transition group-hover:opacity-100">
+                    <ZoomIn className="h-3.5 w-3.5" /> Enlarge
+                  </span>
+                </button>
               </div>
 
               {result.mode === "family" && result.children && (
