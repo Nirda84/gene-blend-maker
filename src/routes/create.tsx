@@ -269,12 +269,6 @@ function CreatePage() {
     toast.success("Link copied!");
   };
 
-  const handleSelectFromHistory = (entry: HistoryEntry) => {
-    setResult(entry);
-    setTimeout(() => {
-      document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 50);
-  };
 
   const handleDeleteHistory = (id: string) => {
     const updated = removeHistoryEntry(id);
