@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from "react";
-import { Upload, X, ImageIcon } from "lucide-react";
+import { Upload, X, ImageIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { compressImage } from "@/lib/imageUtils";
 
 interface UploadZoneProps {
   label: string;
@@ -13,13 +14,23 @@ interface UploadZoneProps {
 export function UploadZone({ label, hint, value, onChange, accent = "indigo" }: UploadZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [drag, setDrag] = useState(false);
+  const [processing, setProcessing] = useState(false);
 
   const handleFile = useCallback(
-    (file: File) => {
+    async (file: File) => {
       if (!file.type.startsWith("image/")) return;
-      const reader = new FileReader();
-      reader.onload = () => onChange(reader.result as string);
-      reader.readAsDataURL(file);
+      setProcessing(true);
+      try {
+        const compressed = await compressImage(file, 1024, 0.85);
+        onChange(compressed);
+      } catch {
+        // Fallback: raw read
+        const reader = new FileReader();
+        reader.onload = () => onChange(reader.result as string);
+        reader.readAsDataURL(file);
+      } finally {
+        setProcessing(false);
+      }
     },
     [onChange],
   );
@@ -49,7 +60,7 @@ export function UploadZone({ label, hint, value, onChange, accent = "indigo" }: 
           e.preventDefault();
           setDrag(false);
           const f = e.dataTransfer.files?.[0];
-          if (f) handleFile(f);
+          if (f) void handleFile(f);
         }}
         onClick={() => !value && inputRef.current?.click()}
         className={cn(
@@ -95,6 +106,11 @@ export function UploadZone({ label, hint, value, onChange, accent = "indigo" }: 
             </p>
           </>
         )}
+        {processing && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/60 backdrop-blur-sm">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          </div>
+        )}
         <input
           ref={inputRef}
           type="file"
@@ -102,7 +118,7 @@ export function UploadZone({ label, hint, value, onChange, accent = "indigo" }: 
           className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0];
-            if (f) handleFile(f);
+            if (f) void handleFile(f);
           }}
         />
       </div>
