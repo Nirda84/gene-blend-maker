@@ -302,6 +302,13 @@ function CreatePage() {
 
       {loading && <LoadingOverlay />}
       <Toaster position="top-center" />
+      <ImageLightbox
+        src={lightbox?.url ?? null}
+        alt={lightbox?.alt ?? ""}
+        downloadName={lightbox?.name}
+        open={!!lightbox}
+        onOpenChange={(o) => { if (!o) setLightbox(null); }}
+      />
 
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16">
         <header className="mb-12 flex items-center justify-between">
