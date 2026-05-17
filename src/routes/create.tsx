@@ -8,7 +8,6 @@ import {
   Wand2,
   Download,
   Share2,
-  Download,
   RefreshCw,
   Baby,
   Users,
