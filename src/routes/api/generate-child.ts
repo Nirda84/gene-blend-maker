@@ -1,19 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
 import "@tanstack/react-start";
 
+type Age = "toddler" | "child" | "teen";
+type Gender = "boy" | "girl";
 type Mode = "boy" | "girl" | "family";
+
+type FamilyChild = { gender: Gender; age: Age };
 
 type Body = {
   parent1: string; // data URL
   parent2: string;
-  age: "toddler" | "child" | "teen";
+  age: Age;
   mode: Mode;
+  children?: FamilyChild[];
 };
 
-const AGE_LABEL: Record<Body["age"], string> = {
+const AGE_LABEL: Record<Age, string> = {
   toddler: "around 2-3 years old",
   child: "around 5-7 years old",
   teen: "around 14-16 years old",
+};
+
+const GENDER_LABEL: Record<Gender, string> = {
+  boy: "a boy",
+  girl: "a girl",
 };
 
 function dataUrlToParts(dataUrl: string) {
@@ -22,23 +32,34 @@ function dataUrlToParts(dataUrl: string) {
   return { mime: m[1], base64: m[2], dataUrl };
 }
 
-function buildPrompt(mode: Mode, age: Body["age"]) {
-  const ageStr = AGE_LABEL[age];
-  if (mode === "family") {
+function buildPrompt(body: Body) {
+  if (body.mode === "family") {
+    const kids = (body.children && body.children.length > 0
+      ? body.children
+      : [
+          { gender: "boy", age: "child" },
+          { gender: "girl", age: "child" },
+        ]) as FamilyChild[];
+
+    const kidsDescription = kids
+      .map((c, i) => `${i + 1}) ${GENDER_LABEL[c.gender]} ${AGE_LABEL[c.age]}`)
+      .join("; ");
+
     return [
-      "You are given two photos of two adults (the parents).",
-      "Carefully study the facial features of BOTH people: face shape, eye color and shape, nose, lips, eyebrows, skin tone, hair color/texture.",
-      `Generate ONE photorealistic studio family portrait that includes BOTH parents (preserve their likeness faithfully) together with their imagined biological child (${ageStr}).`,
-      "The child's face MUST visibly blend features inherited from both parents (skin tone, eye color, hair, nose and lip shape proportionally).",
-      "Composition: the family standing or sitting close together, warm friendly expressions, soft neutral background, well-lit, high-quality photography.",
-      "No text, no watermark, no collage, no duplicated faces.",
+      "You are given two photos of two adults — the parents.",
+      "CRITICAL: Preserve the parents' likeness as closely as possible. Their faces in the output MUST clearly look like the SAME people from the reference photos — same face shape, eye color/shape, nose, lips, hair color and style, skin tone. Do not stylize or rejuvenate the parents.",
+      `Generate ONE photorealistic family portrait that includes BOTH parents (faithful likeness) together with ${kids.length} child${kids.length === 1 ? "" : "ren"}: ${kidsDescription}.`,
+      "Each child's face MUST visibly blend features inherited from both parents (skin tone, eye color, hair, nose and lip shape proportionally). Siblings should look related to each other and to the parents.",
+      "Composition: a single cohesive family standing or sitting close together, warm friendly natural expressions, soft neutral studio background, even flattering lighting, high-quality photography.",
+      `The portrait must show EXACTLY ${2 + kids.length} people in total (2 parents + ${kids.length} child${kids.length === 1 ? "" : "ren"}). No extra people, no duplicated faces, no collage, no text, no watermark.`,
     ].join(" ");
   }
-  const genderStr = mode === "boy" ? "a boy" : "a girl";
+
+  const genderStr = body.mode === "boy" ? "a boy" : "a girl";
   return [
     "You are given two photos of two adults (the parents).",
     "Carefully study the facial features of BOTH people: face shape, eye color and shape, nose, lips, eyebrows, skin tone, hair color/texture.",
-    `Generate ONE photorealistic studio portrait of their imagined biological child as ${genderStr}, ${ageStr}.`,
+    `Generate ONE photorealistic studio portrait of their imagined biological child as ${genderStr}, ${AGE_LABEL[body.age]}.`,
     "The child's face MUST visibly blend features inherited from both parents (mix skin tone, eye color, hair, nose and lip shape proportionally).",
     "Output: a single high-quality, front-facing, well-lit portrait on a soft neutral background. Friendly natural expression. No text, no watermark, no collage, no multiple faces.",
   ].join(" ");
@@ -66,7 +87,7 @@ export const Route = createFileRoute("/api/generate-child")({
           return new Response("Missing LOVABLE_API_KEY on server", { status: 500 });
         }
 
-        const prompt = buildPrompt(body.mode, body.age);
+        const prompt = buildPrompt(body);
 
         const payload = {
           model: "google/gemini-2.5-flash-image",
