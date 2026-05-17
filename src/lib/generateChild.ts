@@ -1,17 +1,15 @@
 // ============================================================================
-// Child face generation service
-// Calls the /api/generate-child TanStack server route which uses the Lovable
-// AI Gateway (google/gemini-2.5-flash-image) to blend the two parent photos.
+// Child / family face generation service
 // ============================================================================
 
 export type ChildAge = "toddler" | "child" | "teen";
-export type ChildGender = "surprise" | "boy" | "girl";
+export type GenMode = "boy" | "girl" | "family";
 
 export interface GenerateChildInput {
   parent1: string; // data URL
   parent2: string; // data URL
   age: ChildAge;
-  gender: ChildGender;
+  mode: GenMode;
 }
 
 export interface GenerateChildResult {
