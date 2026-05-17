@@ -274,21 +274,110 @@ function Index() {
             </div>
           </div>
 
-          <div className="mt-6">
-            <label className="mb-2 block text-sm font-semibold text-foreground">
-              {mode === "family" ? "Child's age in the family portrait" : "Child's age"}
-            </label>
-            <Select value={age} onValueChange={(v) => setAge(v as ChildAge)}>
-              <SelectTrigger className="h-12 rounded-xl">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="toddler">👶 Toddler (2–3)</SelectItem>
-                <SelectItem value="child">🧒 Child (5–7)</SelectItem>
-                <SelectItem value="teen">🧑 Teenager (14–16)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {mode !== "family" && (
+            <div className="mt-6">
+              <label className="mb-2 block text-sm font-semibold text-foreground">
+                Child's age
+              </label>
+              <Select value={age} onValueChange={(v) => setAge(v as ChildAge)}>
+                <SelectTrigger className="h-12 rounded-xl">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="toddler">👶 Toddler (2–3)</SelectItem>
+                  <SelectItem value="child">🧒 Child (5–7)</SelectItem>
+                  <SelectItem value="teen">🧑 Teenager (14–16)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {mode === "family" && (
+            <div className="mt-6 rounded-2xl border border-border bg-background/40 p-4 sm:p-5">
+              <div className="mb-3 flex items-center justify-between">
+                <label className="text-sm font-semibold text-foreground">
+                  Children ({familyChildren.length})
+                </label>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 rounded-full"
+                    onClick={() => removeChild(familyChildren.length - 1)}
+                    disabled={familyChildren.length <= 1}
+                    aria-label="Remove last child"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 rounded-full"
+                    onClick={addChild}
+                    disabled={familyChildren.length >= 5}
+                    aria-label="Add child"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {familyChildren.map((child, idx) => (
+                  <div
+                    key={idx}
+                    className="grid grid-cols-1 items-center gap-2 rounded-xl border border-border bg-card/60 p-3 sm:grid-cols-[auto_1fr_1fr_auto] sm:gap-3"
+                  >
+                    <div className="text-xs font-semibold text-muted-foreground sm:w-16">
+                      Child {idx + 1}
+                    </div>
+                    <Select
+                      value={child.gender}
+                      onValueChange={(v) => updateChild(idx, { gender: v as ChildGender })}
+                    >
+                      <SelectTrigger className="h-10 rounded-lg">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="boy">💙 Boy</SelectItem>
+                        <SelectItem value="girl">💖 Girl</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      value={child.age}
+                      onValueChange={(v) => updateChild(idx, { age: v as ChildAge })}
+                    >
+                      <SelectTrigger className="h-10 rounded-lg">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="toddler">👶 Toddler (2–3)</SelectItem>
+                        <SelectItem value="child">🧒 Child (5–7)</SelectItem>
+                        <SelectItem value="teen">🧑 Teenager (14–16)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 justify-self-end rounded-full text-muted-foreground hover:text-destructive"
+                      onClick={() => removeChild(idx)}
+                      disabled={familyChildren.length <= 1}
+                      aria-label={`Remove child ${idx + 1}`}
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">
+                The portrait will include both parents + {familyChildren.length} child
+                {familyChildren.length === 1 ? "" : "ren"}.
+              </p>
+            </div>
+          )}
 
           {/* CTA */}
           <div className="mt-8 flex flex-col items-center">
