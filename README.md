@@ -6,6 +6,9 @@
 
 Upload two photos and let AI imagine what your future child — or the whole family — could look like. GenBlend blends facial features from both parents to generate photorealistic portraits.
 
+## 🔒 Privacy First
+We take privacy seriously. **GenBlend does not store your photos.** Parental images are compressed locally, processed in-memory, sent securely to the Gemini API, and are immediately discarded by the server after the portrait is generated.
+
 ---
 
 ## ✨ Features
