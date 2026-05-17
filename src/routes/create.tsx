@@ -261,21 +261,6 @@ function CreatePage() {
     toast.success("Copied to clipboard!");
   };
 
-  const handleWhatsApp = () => {
-    if (!result) return;
-    const url = window.location.href;
-    const msg = encodeURIComponent(`${shareText} ${url}`);
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const waUrl = isMobile
-      ? `whatsapp://send?text=${msg}`
-      : `https://web.whatsapp.com/send?text=${msg}`;
-    const win = window.open(waUrl, "_blank", "noopener,noreferrer");
-    if (!win) {
-      // popup blocked — fallback to wa.me which works as a normal link
-      window.location.href = `https://wa.me/?text=${msg}`;
-    }
-  };
-
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(`${shareText} ${window.location.href}`);
     toast.success("Link copied!");
@@ -674,20 +659,12 @@ function CreatePage() {
                   <Share2 className="mr-2 h-4 w-4" /> Share
                 </Button>
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-3">
-                <Button
-                  onClick={handleWhatsApp}
-                  variant="outline"
-                  size="sm"
-                  className="h-10 rounded-xl bg-[oklch(0.85_0.15_150)]/20 hover:bg-[oklch(0.85_0.15_150)]/30"
-                >
-                  💬 WhatsApp
-                </Button>
+              <div className="mt-3">
                 <Button
                   onClick={handleCopyLink}
                   variant="outline"
                   size="sm"
-                  className="h-10 rounded-xl"
+                  className="h-10 w-full rounded-xl"
                 >
                   <Copy className="mr-2 h-4 w-4" /> Copy link
                 </Button>
