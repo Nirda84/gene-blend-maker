@@ -72,18 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
+      { title: "GenBlend" },
       { name: "description", content: "Future Face AI generates AI-predicted images of future children from two uploaded parent photos." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
+      { property: "og:title", content: "GenBlend" },
       { property: "og:description", content: "Future Face AI generates AI-predicted images of future children from two uploaded parent photos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Lovable App" },
+      { name: "twitter:title", content: "GenBlend" },
       { name: "twitter:description", content: "Future Face AI generates AI-predicted images of future children from two uploaded parent photos." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/347f9990-7974-4738-b4e5-07d5b776aaac/id-preview-d873b6fa--d8e4de2e-dd0e-4fd4-9f4b-c0f327d45105.lovable.app-1779024750376.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/347f9990-7974-4738-b4e5-07d5b776aaac/id-preview-d873b6fa--d8e4de2e-dd0e-4fd4-9f4b-c0f327d45105.lovable.app-1779024750376.png" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/04cec3fc-5bb1-4c13-966e-7a29e915416d" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/04cec3fc-5bb1-4c13-966e-7a29e915416d" },
     ],
     links: [
       {
