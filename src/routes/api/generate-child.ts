@@ -5,14 +5,15 @@ type Age = "toddler" | "child" | "teen";
 type Gender = "boy" | "girl";
 type Mode = "boy" | "girl" | "family";
 
-type FamilyChild = { gender: Gender; age: Age };
+type FamilyChild = { gender: Gender; age: Age; name?: string; twinWithPrev?: boolean };
 
 type Body = {
-  parent1: string; // data URL
+  parent1: string;
   parent2: string;
   age: Age;
   mode: Mode;
   children?: FamilyChild[];
+  names?: string[];
 };
 
 const AGE_LABEL: Record<Age, string> = {
@@ -41,25 +42,35 @@ function buildPrompt(body: Body) {
           { gender: "girl", age: "child" },
         ]) as FamilyChild[];
 
-    const kidsDescription = kids
-      .map((c, i) => `${i + 1}) ${GENDER_LABEL[c.gender]} ${AGE_LABEL[c.age]}`)
-      .join("; ");
+    // Group twins together for clearer prompt
+    const parts: string[] = [];
+    kids.forEach((c, i) => {
+      const namePart = c.name ? ` (named ${c.name})` : "";
+      const twinPart = c.twinWithPrev && i > 0 ? " — TWIN sibling of the previous child (same age, strong resemblance)" : "";
+      parts.push(`${i + 1}) ${GENDER_LABEL[c.gender]} ${AGE_LABEL[c.age]}${namePart}${twinPart}`);
+    });
+    const kidsDescription = parts.join("; ");
+
+    const hasTwins = kids.some((c, i) => i > 0 && c.twinWithPrev);
 
     return [
       "You are given two photos of two adults — the parents.",
       "CRITICAL: Preserve the parents' likeness as closely as possible. Their faces in the output MUST clearly look like the SAME people from the reference photos — same face shape, eye color/shape, nose, lips, hair color and style, skin tone. Do not stylize or rejuvenate the parents.",
       `Generate ONE photorealistic family portrait that includes BOTH parents (faithful likeness) together with ${kids.length} child${kids.length === 1 ? "" : "ren"}: ${kidsDescription}.`,
       "Each child's face MUST visibly blend features inherited from both parents (skin tone, eye color, hair, nose and lip shape proportionally). Siblings should look related to each other and to the parents.",
+      hasTwins ? "For TWIN siblings: render them with very similar facial features and identical age, standing close together. Identical twins should look near-identical; if both same gender treat as identical twins." : "",
       "Composition: a single cohesive family standing or sitting close together, warm friendly natural expressions, soft neutral studio background, even flattering lighting, high-quality photography.",
       `The portrait must show EXACTLY ${2 + kids.length} people in total (2 parents + ${kids.length} child${kids.length === 1 ? "" : "ren"}). No extra people, no duplicated faces, no collage, no text, no watermark.`,
-    ].join(" ");
+    ].filter(Boolean).join(" ");
   }
 
   const genderStr = body.mode === "boy" ? "a boy" : "a girl";
+  const soloName = body.names?.[0];
+  const namePart = soloName ? ` (imagined name: ${soloName})` : "";
   return [
     "You are given two photos of two adults (the parents).",
     "Carefully study the facial features of BOTH people: face shape, eye color and shape, nose, lips, eyebrows, skin tone, hair color/texture.",
-    `Generate ONE photorealistic studio portrait of their imagined biological child as ${genderStr}, ${AGE_LABEL[body.age]}.`,
+    `Generate ONE photorealistic studio portrait of their imagined biological child as ${genderStr}, ${AGE_LABEL[body.age]}${namePart}.`,
     "The child's face MUST visibly blend features inherited from both parents (mix skin tone, eye color, hair, nose and lip shape proportionally).",
     "Output: a single high-quality, front-facing, well-lit portrait on a soft neutral background. Friendly natural expression. No text, no watermark, no collage, no multiple faces.",
   ].join(" ");
