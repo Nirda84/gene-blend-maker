@@ -31,6 +31,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { UploadZone } from "@/components/genblend/UploadZone";
 import { LoadingOverlay } from "@/components/genblend/LoadingOverlay";
+import { ImageLightbox } from "@/components/genblend/ImageLightbox";
 import {
   generateChild,
   type ChildAge,
