@@ -106,6 +106,11 @@ export function UploadZone({ label, hint, value, onChange, accent = "indigo" }: 
             </p>
           </>
         )}
+        {processing && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/60 backdrop-blur-sm">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          </div>
+        )}
         <input
           ref={inputRef}
           type="file"
@@ -113,7 +118,7 @@ export function UploadZone({ label, hint, value, onChange, accent = "indigo" }: 
           className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0];
-            if (f) handleFile(f);
+            if (f) void handleFile(f);
           }}
         />
       </div>
