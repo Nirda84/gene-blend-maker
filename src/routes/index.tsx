@@ -63,10 +63,30 @@ function Index() {
   const [parent2, setParent2] = useState<string | null>(null);
   const [age, setAge] = useState<ChildAge>("child");
   const [mode, setMode] = useState<GenMode | null>(null);
+  const [familyChildren, setFamilyChildren] = useState<FamilyChild[]>([
+    { gender: "boy", age: "child" },
+    { gender: "girl", age: "child" },
+  ]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
 
-  const canGenerate = !!parent1 && !!parent2 && !!mode && !loading;
+  const canGenerate =
+    !!parent1 &&
+    !!parent2 &&
+    !!mode &&
+    !loading &&
+    (mode !== "family" || familyChildren.length > 0);
+
+  const updateChild = (idx: number, patch: Partial<FamilyChild>) => {
+    setFamilyChildren((prev) => prev.map((c, i) => (i === idx ? { ...c, ...patch } : c)));
+  };
+  const addChild = () => {
+    if (familyChildren.length >= 5) return;
+    setFamilyChildren((prev) => [...prev, { gender: "boy", age: "child" }]);
+  };
+  const removeChild = (idx: number) => {
+    setFamilyChildren((prev) => prev.filter((_, i) => i !== idx));
+  };
 
   const handleGenerate = async (overrideMode?: GenMode) => {
     const useMode = overrideMode ?? mode;
@@ -78,10 +98,20 @@ function Index() {
       toast.error("Pick what you'd like to create — Boy, Girl, or Family.");
       return;
     }
+    if (useMode === "family" && familyChildren.length === 0) {
+      toast.error("Add at least one child for the family portrait.");
+      return;
+    }
     setLoading(true);
     setResult(null);
     try {
-      const { imageUrl } = await generateChild({ parent1, parent2, age, mode: useMode });
+      const { imageUrl } = await generateChild({
+        parent1,
+        parent2,
+        age,
+        mode: useMode,
+        children: useMode === "family" ? familyChildren : undefined,
+      });
       setResult(imageUrl);
       setTimeout(() => {
         document
