@@ -16,6 +16,7 @@ import {
   History as HistoryIcon,
   Trash2,
   Copy,
+  ZoomIn,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +31,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { UploadZone } from "@/components/genblend/UploadZone";
 import { LoadingOverlay } from "@/components/genblend/LoadingOverlay";
+import { ImageLightbox } from "@/components/genblend/ImageLightbox";
 import {
   generateChild,
   type ChildAge,
@@ -88,6 +90,7 @@ function CreatePage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<HistoryEntry | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [lightbox, setLightbox] = useState<{ url: string; alt: string; name: string } | null>(null);
 
   useEffect(() => {
     setHistory(loadHistory());
@@ -266,12 +269,6 @@ function CreatePage() {
     toast.success("Link copied!");
   };
 
-  const handleSelectFromHistory = (entry: HistoryEntry) => {
-    setResult(entry);
-    setTimeout(() => {
-      document.getElementById("result")?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 50);
-  };
 
   const handleDeleteHistory = (id: string) => {
     const updated = removeHistoryEntry(id);
@@ -305,6 +302,13 @@ function CreatePage() {
 
       {loading && <LoadingOverlay />}
       <Toaster position="top-center" />
+      <ImageLightbox
+        src={lightbox?.url ?? null}
+        alt={lightbox?.alt ?? ""}
+        downloadName={lightbox?.name}
+        open={!!lightbox}
+        onOpenChange={(o) => { if (!o) setLightbox(null); }}
+      />
 
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16">
         <header className="mb-12 flex items-center justify-between">
@@ -618,13 +622,27 @@ function CreatePage() {
                   style={{ background: "var(--gradient-primary)" }}
                   aria-hidden
                 />
-                <div className="relative overflow-hidden rounded-3xl border-4 border-card bg-card shadow-glow">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setLightbox({
+                      url: result.imageUrl,
+                      alt: `AI-generated portrait of ${result.names.join(", ")}`,
+                      name: `genblend-${result.names.join("-").toLowerCase()}.jpg`,
+                    })
+                  }
+                  className="group relative block w-full overflow-hidden rounded-3xl border-4 border-card bg-card shadow-glow cursor-zoom-in"
+                  aria-label="View image full screen"
+                >
                   <img
                     src={result.imageUrl}
                     alt={`AI-generated portrait of ${result.names.join(", ")}`}
-                    className="aspect-square w-full object-cover"
+                    className="aspect-square w-full object-cover transition group-hover:scale-[1.02]"
                   />
-                </div>
+                  <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-background/80 px-2.5 py-1.5 text-xs font-semibold text-foreground opacity-0 backdrop-blur transition group-hover:opacity-100">
+                    <ZoomIn className="h-3.5 w-3.5" /> Enlarge
+                  </span>
+                </button>
               </div>
 
               {result.mode === "family" && result.children && (
@@ -706,8 +724,14 @@ function CreatePage() {
                 >
                   <button
                     type="button"
-                    onClick={() => handleSelectFromHistory(h)}
-                    className="block w-full text-left"
+                    onClick={() =>
+                      setLightbox({
+                        url: h.imageUrl,
+                        alt: h.names.join(", "),
+                        name: `genblend-${h.names.join("-").toLowerCase()}.jpg`,
+                      })
+                    }
+                    className="block w-full cursor-zoom-in text-left"
                   >
                     <img
                       src={h.imageUrl}
