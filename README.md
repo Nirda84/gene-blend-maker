@@ -209,6 +209,5 @@ MIT License — feel free to use, modify, and share.
 ---
 
 <p align="center">
-  Made with 💜 and AI magic<br/>
   <a href="https://lovable.dev">Powered by Lovable</a>
 </p>
