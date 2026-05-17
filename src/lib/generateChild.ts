@@ -4,12 +4,19 @@
 
 export type ChildAge = "toddler" | "child" | "teen";
 export type GenMode = "boy" | "girl" | "family";
+export type ChildGender = "boy" | "girl";
+
+export interface FamilyChild {
+  gender: ChildGender;
+  age: ChildAge;
+}
 
 export interface GenerateChildInput {
   parent1: string; // data URL
   parent2: string; // data URL
-  age: ChildAge;
+  age: ChildAge; // used for solo boy/girl
   mode: GenMode;
+  children?: FamilyChild[]; // used for family mode
 }
 
 export interface GenerateChildResult {
