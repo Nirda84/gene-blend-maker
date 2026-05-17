@@ -240,7 +240,15 @@ function Index() {
     if (!result) return;
     const url = window.location.href;
     const msg = encodeURIComponent(`${shareText} ${url}`);
-    window.open(`https://wa.me/?text=${msg}`, "_blank");
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const waUrl = isMobile
+      ? `whatsapp://send?text=${msg}`
+      : `https://web.whatsapp.com/send?text=${msg}`;
+    const win = window.open(waUrl, "_blank", "noopener,noreferrer");
+    if (!win) {
+      // popup blocked — fallback to wa.me which works as a normal link
+      window.location.href = `https://wa.me/?text=${msg}`;
+    }
   };
 
   const handleCopyLink = async () => {
