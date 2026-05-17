@@ -358,6 +358,19 @@ function CreatePage() {
           </p>
         </section>
 
+        <section className="mb-6 rounded-2xl border border-border bg-card/60 p-4 backdrop-blur sm:p-5">
+          <label className="mb-2 block text-sm font-semibold text-foreground">
+            Your name <span className="font-normal text-muted-foreground">(optional)</span>
+          </label>
+          <Input
+            value={participantName}
+            onChange={(e) => setParticipantName(e.target.value)}
+            placeholder="So we can say hi 👋"
+            className="h-11 rounded-xl"
+            maxLength={48}
+          />
+        </section>
+
         <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-8">
           <UploadZone
             label="Upload Parent 1"
