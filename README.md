@@ -1,5 +1,7 @@
 # 🧬 GenBlend — See Your Future Family
 
+🔗 Live Demo: Try GenBlend Here - https://gene-blend-maker.lovable.app
+
 > AI-powered baby & family face prediction from two parent photos.
 
 Upload two photos and let AI imagine what your future child — or the whole family — could look like. GenBlend blends facial features from both parents to generate photorealistic portraits.
