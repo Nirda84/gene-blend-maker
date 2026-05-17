@@ -54,9 +54,10 @@ function buildPrompt(body: Body) {
     const hasTwins = kids.some((c, i) => i > 0 && c.twinWithPrev);
 
     return [
-      "You are given two photos of two adults — the parents.",
-      "CRITICAL: Preserve the parents' likeness as closely as possible. Their faces in the output MUST clearly look like the SAME people from the reference photos — same face shape, eye color/shape, nose, lips, hair color and style, skin tone. Do not stylize or rejuvenate the parents.",
-      `Generate ONE photorealistic family portrait that includes BOTH parents (faithful likeness) together with ${kids.length} child${kids.length === 1 ? "" : "ren"}: ${kidsDescription}.`,
+      "You are given two reference photos of two adults — the parents.",
+      "ABSOLUTE TOP PRIORITY — IDENTITY LOCK: The two parents in the output MUST be the SAME EXACT people from the reference photos. Treat the reference photos as ground truth and reproduce each parent's face with HIGH FIDELITY: identical face shape and proportions, identical eye color/shape/spacing, identical nose shape, identical lips, identical eyebrows, identical hair color/texture/hairline, identical skin tone and complexion, same approximate age and any distinctive marks (freckles, moles, glasses, beard, facial hair). Do NOT idealize, beautify, smooth, slim, rejuvenate, age, restyle, change ethnicity, change hair, or otherwise alter the parents in ANY way. If you cannot keep an exact likeness, err on the side of copying the reference face directly. The parents must be instantly recognizable to anyone who knows them.",
+      "Only the CHILDREN are imagined/new. The parents are NOT to be reimagined.",
+      `Generate ONE photorealistic family portrait that includes BOTH parents (with the locked likeness described above) together with ${kids.length} child${kids.length === 1 ? "" : "ren"}: ${kidsDescription}.`,
       "Each child's face MUST visibly blend features inherited from both parents (skin tone, eye color, hair, nose and lip shape proportionally). Siblings should look related to each other and to the parents.",
       hasTwins ? "For TWIN siblings: render them with very similar facial features and identical age, standing close together. Identical twins should look near-identical; if both same gender treat as identical twins." : "",
       "Composition: a single cohesive family standing or sitting close together, warm friendly natural expressions, soft neutral studio background, even flattering lighting, high-quality photography.",
