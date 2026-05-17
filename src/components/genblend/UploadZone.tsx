@@ -60,7 +60,7 @@ export function UploadZone({ label, hint, value, onChange, accent = "indigo" }: 
           e.preventDefault();
           setDrag(false);
           const f = e.dataTransfer.files?.[0];
-          if (f) handleFile(f);
+          if (f) void handleFile(f);
         }}
         onClick={() => !value && inputRef.current?.click()}
         className={cn(
