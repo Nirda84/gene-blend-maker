@@ -74,11 +74,13 @@ const MODE_OPTIONS: { value: GenMode; label: string; emoji: string; icon: typeof
   { value: "family", label: "Family", emoji: "👨‍👩‍👧", icon: Users },
 ];
 
-function Index() {
+function CreatePage() {
+  const trackGen = useServerFn(trackGeneration);
   const [parent1, setParent1] = useState<string | null>(null);
   const [parent2, setParent2] = useState<string | null>(null);
   const [age, setAge] = useState<ChildAge>("child");
   const [soloName, setSoloName] = useState<string>("");
+  const [participantName, setParticipantName] = useState<string>("");
   const [mode, setMode] = useState<GenMode | null>(null);
   const [familyChildren, setFamilyChildren] = useState<FamilyChild[]>([
     { gender: "boy", age: "child" },
@@ -90,6 +92,12 @@ function Index() {
 
   useEffect(() => {
     setHistory(loadHistory());
+    try {
+      const saved = window.localStorage.getItem("genblend.participantName");
+      if (saved) setParticipantName(saved);
+    } catch {
+      // ignore
+    }
   }, []);
 
   const canGenerate =
