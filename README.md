@@ -11,16 +11,6 @@ We take privacy seriously. **GenBlend does not store your photos.** Parental ima
 
 ---
 
-## 🎬 Demo
-
-A 22-second walkthrough of the full flow — from landing page to your future child.
-
-https://github.com/user-attachments/assets/genblend-demo.mp4
-
-<!-- The file lives at docs/media/genblend-demo.mp4. To get an inline preview on GitHub, drag the mp4 into a new issue/PR, then replace the URL above with the one GitHub generates. -->
-
-<video src="docs/media/genblend-demo.mp4" controls width="100%"></video>
-
 ---
 
 ## 📸 Screenshots
