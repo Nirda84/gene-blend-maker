@@ -28,6 +28,8 @@ import {
   generateChild,
   type ChildAge,
   type GenMode,
+  type FamilyChild,
+  type ChildGender,
 } from "@/lib/generateChild";
 import { cn } from "@/lib/utils";
 
