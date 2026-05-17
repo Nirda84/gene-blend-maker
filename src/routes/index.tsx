@@ -64,7 +64,7 @@ function Index() {
           ?.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 100);
     } catch (e) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error(e instanceof Error ? e.message : "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
