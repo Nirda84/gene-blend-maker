@@ -183,6 +183,21 @@ function CreatePage() {
       const updated = addHistoryEntry(entry);
       setHistory(updated);
       setResult(updated[0]);
+      // fire-and-forget analytics
+      void trackGen({
+        data: {
+          mode,
+          childNames: names,
+          participantName: participantName.trim() || undefined,
+        },
+      }).catch(() => {});
+      try {
+        if (participantName.trim()) {
+          window.localStorage.setItem("genblend.participantName", participantName.trim());
+        }
+      } catch {
+        // ignore
+      }
       setTimeout(() => {
         document
           .getElementById("result")
