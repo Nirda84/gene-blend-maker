@@ -16,6 +16,7 @@ import {
   History as HistoryIcon,
   Trash2,
   Copy,
+  ZoomIn,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
