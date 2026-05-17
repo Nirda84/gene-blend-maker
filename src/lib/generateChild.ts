@@ -9,14 +9,19 @@ export type ChildGender = "boy" | "girl";
 export interface FamilyChild {
   gender: ChildGender;
   age: ChildAge;
+  name?: string;
+  /** When true, this child is a twin of the previous sibling (same age, sibling resemblance). */
+  twinWithPrev?: boolean;
 }
 
 export interface GenerateChildInput {
-  parent1: string; // data URL
-  parent2: string; // data URL
-  age: ChildAge; // used for solo boy/girl
+  parent1: string;
+  parent2: string;
+  age: ChildAge;
   mode: GenMode;
-  children?: FamilyChild[]; // used for family mode
+  children?: FamilyChild[];
+  /** Optional names: index 0 = solo child name, or aligned with `children` array for family mode. */
+  names?: string[];
 }
 
 export interface GenerateChildResult {
