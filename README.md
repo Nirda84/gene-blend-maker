@@ -11,6 +11,46 @@ We take privacy seriously. **GenBlend does not store your photos.** Parental ima
 
 ---
 
+## 🎬 Demo
+
+A 22-second walkthrough of the full flow — from landing page to your future child.
+
+https://github.com/user-attachments/assets/genblend-demo.mp4
+
+<!-- The file lives at docs/media/genblend-demo.mp4. To get an inline preview on GitHub, drag the mp4 into a new issue/PR, then replace the URL above with the one GitHub generates. -->
+
+<video src="docs/media/genblend-demo.mp4" controls width="100%"></video>
+
+---
+
+## 📸 Screenshots
+
+### 1. Landing — meet GenBlend
+The hero page introduces the concept: upload two parent photos, see your future family in seconds. No signup, free to try.
+
+![Landing page](docs/media/01-home-desktop.png)
+
+### 2. Create — upload both parents
+A single focused screen with two upload zones. Drag-and-drop or click to pick a clear face photo for each parent. An optional name field personalizes the result.
+
+![Create screen — upload zone](docs/media/02-create-desktop.png)
+
+### 3. Pick what to generate
+Choose **Boy**, **Girl**, or **Family portrait** (with twins mode + custom children). Hit **Blend & Generate** and the AI takes about 10 seconds.
+
+![Create screen — generation options](docs/media/03-create-options.png)
+
+### 4. Mobile-first design
+The entire flow works beautifully on phones — the same upload + generate experience, optimized for one-handed use.
+
+<p>
+  <img src="docs/media/04-home-mobile.png" alt="Mobile landing" width="280" />
+  &nbsp;&nbsp;
+  <img src="docs/media/05-create-mobile.png" alt="Mobile create" width="280" />
+</p>
+
+---
+
 ## ✨ Features
 
 | Feature | Description |
