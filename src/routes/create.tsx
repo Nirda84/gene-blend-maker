@@ -50,7 +50,7 @@ import { dataUrlToFile } from "@/lib/imageUtils";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/create")({
-  component: Index,
+  component: CreatePage,
   head: () => ({
     meta: [
       { title: "GenBlend — See Your Future Family" },
