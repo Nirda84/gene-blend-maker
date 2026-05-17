@@ -324,15 +324,18 @@ function CreatePage() {
 
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16">
         <header className="mb-12 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2 transition hover:opacity-80">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-[oklch(0.7_0.2_320)] shadow-soft">
               <Sparkles className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="text-lg font-bold tracking-tight">GenBlend</span>
-          </div>
-          <div className="hidden items-center gap-2 rounded-full bg-card/70 px-4 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur sm:flex">
-            <Heart className="h-3.5 w-3.5 text-primary" /> Powered by AI magic
-          </div>
+          </Link>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/70 px-3 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur transition hover:text-foreground"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Home
+          </Link>
         </header>
 
         <section className="mb-12 text-center">
