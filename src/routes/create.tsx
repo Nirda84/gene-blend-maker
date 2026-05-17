@@ -90,6 +90,7 @@ function CreatePage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<HistoryEntry | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [lightbox, setLightbox] = useState<{ url: string; alt: string; name: string } | null>(null);
 
   useEffect(() => {
     setHistory(loadHistory());
